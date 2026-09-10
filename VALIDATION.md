@@ -22,3 +22,9 @@ Há avisos de depreciação das bibliotecas Starlette/httpx/anyio e avisos de an
 O Docker Desktop local não disponibilizou o engine durante a verificação inicial. A configuração foi validada; a execução real dos containers e a integração PostgreSQL também possuem verificações no workflow `.github/workflows/ci.yml`. A primeira execução da CI passou em todos os jobs, incluindo o smoke PostgreSQL com oito gerações concorrentes: https://github.com/matheushiramatsu/nfe_generator/actions/runs/34497084078. O workflow também foi ampliado para subir os três containers, consultar a API por meio do proxy do frontend e executar o smoke dentro do container.
 
 Não foram testados assinatura, autorização SEFAZ, regras fiscais fora do perfil do MVP ou produção — essas funcionalidades não estão implementadas. O teste XSD cobre `infNFe`, como descrito no README.
+
+## Resultado remoto final
+
+A [execução 34497639271](https://github.com/matheushiramatsu/nfe_generator/actions/runs/34497639271), no commit de código `640950c`, concluiu **todos os jobs com sucesso**: backend (50 testes, lint, migrations e concorrência PostgreSQL), frontend (6 testes, lint e build) e Docker (build, subida dos três serviços com health checks, acesso HTTP ao frontend, API pelo proxy e smoke PostgreSQL dentro do container).
+
+Os cinco arquivos XSD extraídos foram comparados byte a byte com o ZIP oficial e são idênticos. O repositório possui atributos Git que preservam esses arquivos sem conversão de finais de linha.
