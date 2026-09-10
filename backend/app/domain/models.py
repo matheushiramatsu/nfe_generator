@@ -17,7 +17,7 @@ class Model(BaseModel):
     @classmethod
     def reject_xml_controls(cls, value):
         if isinstance(value, str) and any(ord(char) < 32 and char not in "\n\r\t" for char in value):
-            raise ValueError("Caracteres de controle nÃ£o sÃ£o permitidos em campos XML.")
+            raise ValueError("Caracteres de controle não são permitidos em campos XML.")
         return value
 
     model_config = ConfigDict(

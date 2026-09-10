@@ -59,6 +59,12 @@ def validate_party(p: Party, prefix: str, issuer=False) -> list[Issue]:
     return issues
 
 
+def operation_suggestions(invoice: Invoice) -> dict:
+    destination = "1" if invoice.issuer.address.uf == invoice.recipient.address.uf else "2"
+    prefix = "5" if destination == "1" else "6"
+    return {"destination": destination, "cfops": [prefix + item.cfop[1:] for item in invoice.items]}
+
+
 def validate(invoice: Invoice) -> list[Issue]:
     issues = validate_party(invoice.issuer, "issuer", True) + validate_party(invoice.recipient, "recipient")
 
@@ -75,7 +81,7 @@ def validate(invoice: Invoice) -> list[Issue]:
         invoice.departure_at.tzinfo is None or invoice.departure_at < invoice.issued_at
     ):
         error("departure_at", "Saída deve incluir fuso e ser posterior ou igual à emissão.")
-    expected = "1" if invoice.issuer.address.uf == invoice.recipient.address.uf else "2"
+    expected = operation_suggestions(invoice)["destination"]
     if invoice.destination != expected:
         error("destination", "Destino da operação não corresponde às UFs do emitente e destinatário.")
     if invoice.purpose != "1" or invoice.operation != "1":

@@ -13,7 +13,7 @@ from sqlalchemy.orm import Session, selectinload
 from app.domain.calculations import calculate
 from app.domain.documents import digits
 from app.domain.models import AutomationOptions, Invoice, Party, Product, Settings, now
-from app.domain.validation import UF_CODES, validate, validate_party
+from app.domain.validation import UF_CODES, operation_suggestions, validate, validate_party
 from app.persistence.database import ApplicationSettings, InvoiceRecord, Issuer, Recipient, get_session
 from app.persistence.database import Product as ProductRow
 from app.persistence.repositories import invoice_payload, next_number, read_settings, save_invoice, summary
@@ -203,6 +203,11 @@ def test_data(db: DB):
             db.add(row)
     db.commit()
     return {"message": "1 emitente, 2 destinatários e 4 produtos fictícios cadastrados."}
+
+
+@router.post("/invoices/operation", tags=["invoices"])
+def suggest_operation(value: Invoice):
+    return operation_suggestions(value)
 
 
 @router.post("/invoices/calculate", tags=["invoices"])

@@ -155,6 +155,7 @@ A documentação completa e automática está em `/docs` e `/openapi.json`.
 | GET/PUT | `/api/settings` | Configurações |
 | GET | `/api/addresses/{cep}` | Consulta ViaCEP com timeout |
 | POST | `/api/test-data` | Criar conjunto fictício explícito |
+| POST | `/api/invoices/operation` | Sugestões de destino e prefixos CFOP centralizadas no domínio |
 | POST | `/api/invoices/calculate` | Valores dos itens e totais |
 | POST | `/api/invoices/validate` | Validação do domínio e XSD de infNFe |
 | POST | `/api/invoices/generate-random` | Combinação para revisão, sem persistir nota |

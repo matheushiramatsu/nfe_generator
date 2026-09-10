@@ -60,12 +60,13 @@ export function PartyStep({ issuer = false }: { issuer?: boolean }) {
             const selected = data?.find((p) => p.id === e.target.value);
             if (selected) {
               setValue(key, structuredClone(selected));
-              const other = getValues(issuer ? "recipient" : "issuer");
-              if (other.address.uf)
-                setValue(
-                  "destination",
-                  selected.address.uf === other.address.uf ? "1" : "2",
-                );
+              api<{ destination: string }>(
+                "/invoices/operation",
+                "POST",
+                getValues(),
+              )
+                .then((result) => setValue("destination", result.destination))
+                .catch((e) => toast(message(e), true));
             }
           }}
         >
@@ -94,7 +95,8 @@ export function PartyStep({ issuer = false }: { issuer?: boolean }) {
   );
 }
 export function ProductsStep() {
-  const { control, watch, setValue } = useFormContext<Invoice>();
+  const { control, watch, setValue, getValues } = useFormContext<Invoice>();
+  const toast = useToast();
   const { fields, append, remove } = useFieldArray({
     control,
     name: "items",
@@ -230,14 +232,18 @@ export function ProductsStep() {
           type="button"
           className="text-button"
           onClick={() => {
-            const destination = watch("destination");
-            fields.forEach((_, i) =>
-              setValue(
-                `items.${i}.cfop`,
-                (destination === "1" ? "5" : "6") +
-                  watch(`items.${i}.cfop`).slice(1),
-              ),
-            );
+            api<{ destination: string; cfops: string[] }>(
+              "/invoices/operation",
+              "POST",
+              getValues(),
+            )
+              .then((result) => {
+                setValue("destination", result.destination);
+                result.cfops.forEach((cfop, i) =>
+                  setValue(`items.${i}.cfop`, cfop),
+                );
+              })
+              .catch((e) => toast(message(e), true));
           }}
         >
           Ajustar prefixo do CFOP ao destino da operação

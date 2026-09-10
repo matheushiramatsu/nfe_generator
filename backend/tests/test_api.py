@@ -97,3 +97,10 @@ def test_settings(client):
 def test_missing_endpoints(client):
     assert client.get("/api/invoices/missing/json").status_code == 404
     assert client.delete("/api/products/missing").status_code == 404
+
+
+def test_operation_suggestions_are_server_owned(client, invoice):
+    invoice.recipient.address.uf = "RJ"
+    response = client.post("/api/invoices/operation", json=invoice.model_dump(mode="json"))
+    assert response.json()["destination"] == "2"
+    assert all(code.startswith("6") for code in response.json()["cfops"])
