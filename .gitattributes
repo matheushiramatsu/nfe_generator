@@ -1,0 +1,3 @@
+* text=auto eol=lf
+*.xsd -text -whitespace
+*.zip binary
